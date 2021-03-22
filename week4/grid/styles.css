@@ -1,0 +1,17 @@
+.parent {
+    background-color: lightskyblue;
+    height: 600px;
+    width: 100%;
+    display: grid;
+    grid-auto-columns: minmax(10px, 50%);;
+    /* grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); */
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
+}
+
+.child {
+    background-color: purple;
+    border: 2px solid black;
+    height: 100%;
+    width: 100%;
+}
