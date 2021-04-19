@@ -1,7 +1,10 @@
-const { Router } = require('express');
-const verifyTokenMiddleware = require('../../middleware/verify-token');
+import { Router } from 'express';
+import { verifyTokenMiddleware } from '../../middleware/verify-token';
+import jwt from 'jsonwebtoken'
+import { User } from '../../models/user';
 
 const router = Router();
+let refreshTokens: string[] = [];
 
 router.post('/token', (req, res) => {
 	const refreshToken = req.body.token;
@@ -10,8 +13,9 @@ router.post('/token', (req, res) => {
 		return res.status(400).send('Token unavailable'); // 400: Bad Request!
 	}
 
+	let user: User;
 	try {
-		user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+		user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET) as User;
 		const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,);
 
 		if (!accessToken) {
@@ -44,4 +48,4 @@ router.post('/user', (req, res) => {
 	res.json({ accessToken, refreshToken }).send();
 })
 
-module.exports = router;
+export default router;
