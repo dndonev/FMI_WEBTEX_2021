@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import { verify, sign } from 'jsonwebtoken'
+
 import { verifyTokenMiddleware } from '../../middleware/verify-token';
-import jwt from 'jsonwebtoken'
 import { User } from '../../models/user';
 
 const router = Router();
@@ -15,8 +16,8 @@ router.post('/token', (req, res) => {
 
 	let user: User;
 	try {
-		user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET) as User;
-		const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,);
+		user = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET) as User;
+		const accessToken = sign(user, process.env.ACCESS_TOKEN_SECRET,);
 
 		if (!accessToken) {
 			return res.sendStatus(403);
@@ -41,8 +42,8 @@ router.post('/user', (req, res) => {
 	const username = req.body.username;
 	const user = { name: username }
 	/// NEED VALIDATION LOGIC - Passed!
-	const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5s' });
-	const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+	const accessToken = sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5s' });
+	const refreshToken = sign(user, process.env.REFRESH_TOKEN_SECRET);
 
 	refreshTokens.push(refreshToken);
 	res.json({ accessToken, refreshToken }).send();
